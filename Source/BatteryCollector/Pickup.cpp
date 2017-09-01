@@ -14,7 +14,7 @@ APickup::APickup()
 
 	/** create the static mesh component */
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
-	RootComponent = PickupMesh;
+	//RootComponent = PickupMesh;
 
 }
 
