@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SpawnVolume.h"
-#include "Runtime/Engine/Classes/Engine/World.h"
+#include "Public/TimerManager.h"
+#include "Engine/World.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Pickup.h"
 
@@ -14,7 +15,11 @@ ASpawnVolume::ASpawnVolume()
 
 	/** create the Box Component to represent the spawn volume */
 	WhereToSpawn = CreateDefaultSubobject<UBoxComponent>(TEXT("WhereToSpawn"));
-	//RootComponent = WhereToSpawn;
+	RootComponent = WhereToSpawn;
+
+	/** set the spawn delay range */
+	SpawnDelayRangeLow = 1.0f;
+	SpawnDelayRangeHigh = 4.5f;
 
 }
 
@@ -22,7 +27,9 @@ ASpawnVolume::ASpawnVolume()
 void ASpawnVolume::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	SpawnDelay = FMath::FRandRange(SpawnDelayRangeLow, SpawnDelayRangeHigh);
+	GetWorldTimerManager().SetTimer(SpawnTimer, this, &ASpawnVolume::SpawnPickup, SpawnDelay, false);
 }
 
 // Called every frame
@@ -65,6 +72,9 @@ void ASpawnVolume::SpawnPickup()
 
 			/** spawn the pickup */
 			APickup* const SpawnedPickup = World->SpawnActor<APickup>(WhatToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+
+			SpawnDelay = FMath::FRandRange(SpawnDelayRangeLow, SpawnDelayRangeHigh);
+			GetWorldTimerManager().SetTimer(SpawnTimer, this, &ASpawnVolume::SpawnPickup, SpawnDelay, false);
 		}
 	}
 }
