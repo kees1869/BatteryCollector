@@ -17,7 +17,9 @@ class BATTERYCOLLECTOR_API ABatteryPickup : public APickup
 public:
 	// Sets default values for this actor's properties
 	ABatteryPickup();
-	
+
+	/** override WasCollected method - use implementation because it's a Blueprint Native Event */
+	void WasCollected_Implementation() override;
 	
 	
 	
