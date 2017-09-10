@@ -2,6 +2,7 @@
 
 #include "BatteryCollectorCharacter.h"
 #include "Pickup.h"
+#include "BatteryPickup.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -152,6 +153,9 @@ void ABatteryCollectorCharacter::CollectPickups()
 	TArray<AActor*> CollectedActors;
 	CollectionSphere->GetOverlappingActors(CollectedActors);
 
+	/** keep track of the collected battery power */
+	float CollectedPower = 0;
+
 	/** for each actor we collected */
 	for (int32 iCollected = 0; iCollected < CollectedActors.Num(); ++iCollected)
 	{
@@ -162,9 +166,20 @@ void ABatteryCollectorCharacter::CollectPickups()
 		{
 			/** call the pickup's WasCollected method */
 			TestPickup->WasCollected();
+			/** check to see if the pickup is also a battery */
+			ABatteryPickup* const TestBattery = Cast <ABatteryPickup>(TestPickup);
+			if (TestBattery) /** if the cast/test was successful and we have a ABatteryPickup */
+			{
+				/** increase the collected power */
+				CollectedPower += TestBattery->GetPower();
+			}
 			/** deactivate the pickup */
 			TestPickup->SetActive(false);
 		}
+	}
+	if (CollectedPower > 0) /** have we collected any batteries? */
+	{
+		UpdatePower(CollectedPower);
 	}
 }
 

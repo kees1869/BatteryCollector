@@ -81,12 +81,12 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
 
-	/** called when we press a key to collect any pickup inside the CollectionSphere */
-	UFUNCTION(BlueprintCallable, Category= "Pickup")
+	/** called when we press a key to collect any pickups inside the CollectionSphere */
+	UFUNCTION(BlueprintCallable, Category= "Pickups")
 	void CollectPickups();
 
 	/** the starting power level of our character */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power", meta = (BlueprintProtected = "true"))
 	float InitialPower;
 
 private:
